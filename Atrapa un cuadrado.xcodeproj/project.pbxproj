@@ -12,19 +12,19 @@
 			containerPortal = BD6E140C2F6CC66900310E7C /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BD6E14132F6CC66900310E7C;
-			remoteInfo = "Atrapa un cuadrado";
+			remoteInfo = AtrapaUnCuadrado;
 		};
 		BD6E14372F6CC66B00310E7C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BD6E140C2F6CC66900310E7C /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BD6E14132F6CC66900310E7C;
-			remoteInfo = "Atrapa un cuadrado";
+			remoteInfo = AtrapaUnCuadrado;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		BD6E14142F6CC66900310E7C /* Atrapa un cuadrado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Atrapa un cuadrado.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD6E14142F6CC66900310E7C /* AtrapaUnCuadrado.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AtrapaUnCuadrado.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD6E142C2F6CC66B00310E7C /* Atrapa un cuadradoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Atrapa un cuadradoTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD6E14362F6CC66B00310E7C /* Atrapa un cuadradoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Atrapa un cuadradoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -85,7 +85,7 @@
 		BD6E14152F6CC66900310E7C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BD6E14142F6CC66900310E7C /* Atrapa un cuadrado.app */,
+				BD6E14142F6CC66900310E7C /* AtrapaUnCuadrado.app */,
 				BD6E142C2F6CC66B00310E7C /* Atrapa un cuadradoTests.xctest */,
 				BD6E14362F6CC66B00310E7C /* Atrapa un cuadradoUITests.xctest */,
 			);
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BD6E14132F6CC66900310E7C /* Atrapa un cuadrado */ = {
+		BD6E14132F6CC66900310E7C /* AtrapaUnCuadrado */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BD6E14402F6CC66B00310E7C /* Build configuration list for PBXNativeTarget "Atrapa un cuadrado" */;
+			buildConfigurationList = BD6E14402F6CC66B00310E7C /* Build configuration list for PBXNativeTarget "AtrapaUnCuadrado" */;
 			buildPhases = (
 				BD6E14102F6CC66900310E7C /* Sources */,
 				BD6E14112F6CC66900310E7C /* Frameworks */,
@@ -110,11 +110,11 @@
 			fileSystemSynchronizedGroups = (
 				BD6E14162F6CC66900310E7C /* Atrapa un cuadrado */,
 			);
-			name = "Atrapa un cuadrado";
+			name = AtrapaUnCuadrado;
 			packageProductDependencies = (
 			);
-			productName = "Atrapa un cuadrado";
-			productReference = BD6E14142F6CC66900310E7C /* Atrapa un cuadrado.app */;
+			productName = AtrapaUnCuadrado;
+			productReference = BD6E14142F6CC66900310E7C /* AtrapaUnCuadrado.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BD6E142B2F6CC66B00310E7C /* Atrapa un cuadradoTests */ = {
@@ -187,11 +187,11 @@
 				};
 			};
 			buildConfigurationList = BD6E140F2F6CC66900310E7C /* Build configuration list for PBXProject "Atrapa un cuadrado" */;
-			developmentRegion = en;
+			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				es,
 			);
 			mainGroup = BD6E140B2F6CC66900310E7C;
 			minimizedProjectReferenceProxies = 1;
@@ -200,7 +200,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BD6E14132F6CC66900310E7C /* Atrapa un cuadrado */,
+				BD6E14132F6CC66900310E7C /* AtrapaUnCuadrado */,
 				BD6E142B2F6CC66B00310E7C /* Atrapa un cuadradoTests */,
 				BD6E14352F6CC66B00310E7C /* Atrapa un cuadradoUITests */,
 			);
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		BD6E142E2F6CC66B00310E7C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BD6E14132F6CC66900310E7C /* Atrapa un cuadrado */;
+			target = BD6E14132F6CC66900310E7C /* AtrapaUnCuadrado */;
 			targetProxy = BD6E142D2F6CC66B00310E7C /* PBXContainerItemProxy */;
 		};
 		BD6E14382F6CC66B00310E7C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BD6E14132F6CC66900310E7C /* Atrapa un cuadrado */;
+			target = BD6E14132F6CC66900310E7C /* AtrapaUnCuadrado */;
 			targetProxy = BD6E14372F6CC66B00310E7C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -274,6 +274,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -338,6 +339,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -395,10 +397,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Atrapa un cuadrado/Atrapa un cuadrado.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Atrapa un cuadrado";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -411,13 +417,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Com.Atrapa-un-cuadrado";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.atrapauncuadrado;
+				PRODUCT_MODULE_NAME = AtrapaUnCuadrado;
+				PRODUCT_NAME = AtrapaUnCuadrado;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(TARGET_NAME)/ShaderTypes.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -429,10 +435,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Atrapa un cuadrado/Atrapa un cuadradoRelease.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Atrapa un cuadrado";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -445,13 +455,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Com.Atrapa-un-cuadrado";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.antoniohermoso.atrapauncuadrado;
+				PRODUCT_MODULE_NAME = AtrapaUnCuadrado;
+				PRODUCT_NAME = AtrapaUnCuadrado;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(TARGET_NAME)/ShaderTypes.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -464,6 +474,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
@@ -476,7 +487,8 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Atrapa un cuadrado.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Atrapa un cuadrado";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AtrapaUnCuadrado.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AtrapaUnCuadrado";
+				TEST_TARGET_NAME = AtrapaUnCuadrado;
 			};
 			name = Debug;
 		};
@@ -486,6 +498,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
@@ -498,7 +511,8 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Atrapa un cuadrado.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Atrapa un cuadrado";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AtrapaUnCuadrado.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AtrapaUnCuadrado";
+				TEST_TARGET_NAME = AtrapaUnCuadrado;
 			};
 			name = Release;
 		};
@@ -507,9 +521,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Com.Atrapa-un-cuadradoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -518,7 +533,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Atrapa un cuadrado";
+				TEST_TARGET_NAME = AtrapaUnCuadrado;
 			};
 			name = Debug;
 		};
@@ -527,9 +542,11 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 2S747NZP4R;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				"INSTALL_PATH[sdk=iphoneos*]" = "$(INSTALL_PATH_XCTRUNNER_$(USES_XCTRUNNER:default=NO))";
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Com.Atrapa-un-cuadradoUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -538,7 +555,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Atrapa un cuadrado";
+				TEST_TARGET_NAME = AtrapaUnCuadrado;
 			};
 			name = Release;
 		};
@@ -554,7 +571,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BD6E14402F6CC66B00310E7C /* Build configuration list for PBXNativeTarget "Atrapa un cuadrado" */ = {
+		BD6E14402F6CC66B00310E7C /* Build configuration list for PBXNativeTarget "AtrapaUnCuadrado" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BD6E14412F6CC66B00310E7C /* Debug */,

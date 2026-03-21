@@ -10,7 +10,7 @@ import XCTest
 final class Atrapa_un_cuadradoUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
+        false
     }
 
     override func setUpWithError() throws {

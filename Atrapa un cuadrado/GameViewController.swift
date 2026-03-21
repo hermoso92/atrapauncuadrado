@@ -5,52 +5,61 @@
 //  Created by Antonio Hermoso on 20/3/26.
 //
 
+import SpriteKit
 import UIKit
-import MetalKit
 
-// Our iOS specific view controller
-class GameViewController: UIViewController {
+final class GameViewController: UIViewController {
 
-    var renderer: Renderer!
-    var mtkView: MTKView!
+    private let skView = SKView(frame: .zero)
+    private var hasPresented = false
+
+    override func loadView() {
+        view = skView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        guard let mtkView = view as? MTKView else {
-            print("View of Gameview controller is not an MTKView")
+        skView.ignoresSiblingOrder = true
+
+        #if DEBUG
+        skView.showsFPS = true
+        skView.showsNodeCount = true
+        skView.showsDrawCount = true
+        #endif
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if !hasPresented && !view.bounds.isEmpty {
+            hasPresented = true
+            presentMainMenu()
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        true
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        .portrait
+    }
+
+    private func presentMainMenu() {
+        guard !view.bounds.isEmpty else {
             return
         }
 
-        // Select the device to render with.  We choose the default device
-        guard let defaultDevice = MTLCreateSystemDefaultDevice() else {
-            print("Metal is not supported")
-            return
-        }
-        
-#if targetEnvironment(simulator)
-        print("Metal 4 is not supported on simulator")
-        return
-#else
-        // Check for Metal 4 support
-        if !defaultDevice.supportsFamily(.metal4) {
-            print("Metal 4 is not supported")
-            return
-        }
-        
-        mtkView.device = defaultDevice
-        mtkView.backgroundColor = UIColor.black
-
-        guard let newRenderer = Renderer(metalKitView: mtkView) else {
-            print("Renderer cannot be initialized")
-            return
-        }
-
-        renderer = newRenderer
-
-        renderer.mtkView(mtkView, drawableSizeWillChange: mtkView.drawableSize)
-
-        mtkView.delegate = renderer
-#endif
+        let scene = ModeSelectScene(sceneSize: view.bounds.size)
+        scene.scaleMode = .resizeFill
+        skView.presentScene(scene)
     }
 }
