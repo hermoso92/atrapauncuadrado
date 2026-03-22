@@ -4,9 +4,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+## [1.1.1] — 2026-03-22
+
 ### Añadido
 
-- `scripts/export-ipa.sh` con `ExportOptions-Development.plist` (método `debugging`) y `ExportOptions-AppStore.plist` (`app-store-connect`).
+- `scripts/export-ipa.sh` con `ExportOptions-Development.plist` (método `debugging`) y `ExportOptions-AppStore.plist` (`app-store-connect`); documentado en `README.md`.
 
 ## [1.1.0] — 2026-03-22
 
@@ -45,5 +47,6 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 - Versión de marketing inicial de la app: **1.0** (etiqueta `v1.0` en Git).
 
+[1.1.1]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.1
 [1.1.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.0
 [1.0.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.0
