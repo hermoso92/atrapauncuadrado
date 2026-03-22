@@ -31,6 +31,17 @@ Compilar desde terminal (ajusta el simulador al que tengas):
 xcodebuild -scheme "Atrapa un cuadrado" -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
+### Exportar `.ipa` (terminal)
+
+Requiere **Xcode**, cuenta de desarrollador y firma automática configurada en el proyecto.
+
+| Comando | Resultado |
+|---------|-----------|
+| `./scripts/export-ipa.sh` | IPA **debugging** (dispositivos del equipo; `scripts/ExportOptions-Development.plist`). |
+| `./scripts/export-ipa.sh app-store` | IPA para **App Store Connect** / TestFlight (`ExportOptions-AppStore.plist`; hace falta certificado **Apple Distribution**). |
+
+Salida: `build/ipa/*.ipa` y archivo en `build/AtrapaUnCuadrado.xcarchive`. La carpeta `build/` está en `.gitignore`.
+
 ## Cómo está montada la app
 
 ### Punto de entrada y pantalla de juego

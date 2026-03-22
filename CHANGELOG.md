@@ -4,6 +4,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+### Añadido
+
+- `scripts/export-ipa.sh` con `ExportOptions-Development.plist` (método `debugging`) y `ExportOptions-AppStore.plist` (`app-store-connect`).
+
 ## [1.1.0] — 2026-03-22
 
 ### Añadido
