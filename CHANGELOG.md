@@ -4,24 +4,25 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-03-22
+
 ### Añadido
 
-- **Selector de modos** (`ModeSelectScene`): entrada desde `GameViewController` con **cuatro** rutas (Clásico, Arsenal, Fantasma, Artificial World); `AppLaunchPreferences.lastExperience` distingue arcade vs mundo para telemetría o futuras mejoras.
+- **Selector de modos** (`ModeSelectScene`): entrada desde `GameViewController` con **cuatro** rutas (Clásico, Arsenal, Fantasma, Artificial World); `AppLaunchPreferences.lastExperience` distingue arcade vs mundo.
 - Tests de **`WorldAgentBrain`**: huida con hostil cercano, retirada al refugio con vitales bajos, formato de línea de utilidad.
-- **Artificial World — progresión y arcade**: nivel de refugio con escala/regeneración vía `ArtificialWorldSimulation`; botones de habilidades de mundo con cooldowns; puente `ArcadeWorldBridge` para lanzar `GameScene` desde el mundo y volver con bonus de monedas al game over; protocolos de sync en `Networking/WorldSyncProtocols.swift` (stubs / NoOp).
-- **Artificial World**: modo persistente con mapa base, refugio, entidades (cuadrados común/nutritivo/hostil/raro/recurso), hambre/energía, inventario mínimo, HUD, guardado **SwiftData** (`WorldRepository`), memoria resumida del agente, agente por utilidades + estados (`WorldAgentBrain`), control manual/automático/híbrido y telemetría en debug (`AppTelemetry`).
-- **Dominio**: protocolos en `Domain/Protocols/` (repositorio de mundo, telemetría, reloj de simulación, auth anónima, memoria del agente).
-- **Arquitectura**: carpetas `App/`, `Features/Arcade/`, `Features/ArtificialWorld/`, `Persistence/`, `Services/`; documentación en `docs/ARTIFICIAL_WORLD_FASE0.md`.
-- Entrada **Artificial World** en la pantalla de selección principal (`ModeSelectScene`).
+- **Artificial World — progresión y arcade**: nivel de refugio con escala/regeneración vía `ArtificialWorldSimulation`; habilidades de mundo con cooldowns; puente `ArcadeWorldBridge` para lanzar `GameScene` desde el mundo y volver con bonus de monedas; protocolos de sync en `Networking/WorldSyncProtocols.swift` (stubs).
+- **Artificial World**: modo persistente con mapa, refugio, entidades, hambre/energía, inventario, HUD, **SwiftData** (`WorldRepository`), memoria del agente, `WorldAgentBrain`, control manual/automático/híbrido y telemetría debug (`AppTelemetry`).
+- **Dominio**: protocolos en `Domain/Protocols/` (repositorio de mundo, telemetría, reloj, auth, memoria del agente).
+- **Arquitectura**: carpetas `App/`, `Features/Arcade/`, `Features/ArtificialWorld/`, `Persistence/`, `Services/`; `docs/ARTIFICIAL_WORLD_FASE0.md`.
 
 ### Cambiado
 
-- `README.md`: estructura actual (`App/`, `Features/`, Artificial World, SwiftData) y flujo de cuatro modos.
-- `ModeSelectScene`: layout de cuatro tarjetas **adaptativo** a la altura de la escena (teléfonos bajos vs altos).
-- `ArtificialWorldPersistence`: creación explícita de **Application Support** antes del store SwiftData.
-- Escenas SpriteKit del arcade movidas a `Features/Arcade/Scenes/`; `AppDelegate` / `SceneDelegate` / `GameViewController` en `App/`.
-- `BaseScene` usa `SceneDependencies` en lugar de singletons directos como propiedades almacenadas.
-- `GameScene`: temporizadores de spawn y dificultad centralizados en `ArcadeRunTimersState` (sin cambiar reglas de juego).
+- `README.md`: estructura actual y flujo de cuatro modos.
+- `ModeSelectScene`: layout de cuatro tarjetas **adaptativo** según altura de escena.
+- `ArtificialWorldPersistence`: creación de **Application Support** antes del store SwiftData.
+- Escenas arcade en `Features/Arcade/Scenes/`; punto de entrada UI en `App/`.
+- `BaseScene` usa `SceneDependencies` en lugar de singletons como propiedades almacenadas.
+- `GameScene`: temporizadores en `ArcadeRunTimersState` (mismas reglas de juego).
 
 ## [1.0.0] — 2026-03-21
 
@@ -38,6 +39,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ### Notas
 
-- Versión de marketing de la app: **1.0** (según configuración del target en Xcode).
+- Versión de marketing inicial de la app: **1.0** (etiqueta `v1.0` en Git).
 
+[1.1.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.0
 [1.0.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.0
