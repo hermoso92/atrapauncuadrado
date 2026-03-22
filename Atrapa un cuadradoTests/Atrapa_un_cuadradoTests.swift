@@ -310,4 +310,72 @@ struct Atrapa_un_cuadradoTests {
         #expect(restricted.canUse(.returnToShelter))
         #expect(!restricted.canUse(.sprint))
     }
+
+    @Test func worldAgentBrainFleesWhenHostileIsVeryClose() async throws {
+        var brain = WorldAgentBrain()
+        let player = CGPoint(x: 100, y: 100)
+        let hostile = WorldSquareBody(
+            id: UUID(),
+            position: CGPoint(x: 100, y: 30),
+            velocity: .zero,
+            kind: .hostile
+        )
+        let bounds = CGRect(x: 0, y: 0, width: 320, height: 320)
+        let target = brain.nextSteerTarget(
+            now: 1.0,
+            player: player,
+            hunger: 1,
+            energy: 1,
+            shelterCenter: .zero,
+            shelterRadius: 40,
+            squares: [hostile],
+            worldBounds: bounds
+        )
+        #expect(brain.state == .flee)
+        #expect(target != nil)
+        #expect(target!.y > player.y)
+
+        let again = brain.nextSteerTarget(
+            now: 1.05,
+            player: player,
+            hunger: 1,
+            energy: 1,
+            shelterCenter: .zero,
+            shelterRadius: 40,
+            squares: [hostile],
+            worldBounds: bounds
+        )
+        #expect(again == nil)
+    }
+
+    @Test func worldAgentBrainRetreatsToShelterWhenHungryOutside() async throws {
+        var brain = WorldAgentBrain()
+        let shelter = CGPoint(x: 200, y: 200)
+        let player = CGPoint(x: 50, y: 50)
+        let bounds = CGRect(x: 0, y: 0, width: 400, height: 400)
+        let target = brain.nextSteerTarget(
+            now: 2.0,
+            player: player,
+            hunger: 0.2,
+            energy: 1,
+            shelterCenter: shelter,
+            shelterRadius: 30,
+            squares: [],
+            worldBounds: bounds
+        )
+        #expect(brain.state == .retreat)
+        #expect(target == shelter)
+    }
+
+    @Test func worldAgentBrainUtilitySummaryLineMentionsVitals() async throws {
+        let brain = WorldAgentBrain()
+        let line = brain.utilitySummaryLine(
+            player: CGPoint(x: 50, y: 50),
+            hunger: 0.4,
+            energy: 0.5,
+            squares: []
+        )
+        #expect(line.hasPrefix("U h:"))
+        #expect(line.contains("e:"))
+    }
 }

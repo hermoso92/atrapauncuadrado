@@ -5,11 +5,20 @@ import SwiftData
 enum ArtificialWorldPersistence {
     @MainActor private static var repository: SwiftDataWorldRepository?
 
+    /// Garantiza `Application Support` antes del store SQLite (evita fallos en simulador / primer arranque).
+    private static func ensureApplicationSupportDirectory() {
+        guard let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            return
+        }
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+    }
+
     @MainActor
     static func bootstrapIfNeeded() {
         guard repository == nil else {
             return
         }
+        ensureApplicationSupportDirectory()
         do {
             let schema = Schema([PersistedWorldState.self, PersistedAgentMemoryRecord.self])
             let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)

@@ -70,6 +70,7 @@ Los tres modos **Clásico**, **Arsenal** y **Fantasma** siguen en `GameScene` co
 
 ## SwiftData y campos nuevos
 
+- `ArtificialWorldPersistence.bootstrapIfNeeded()` crea el directorio **Application Support** del contenedor antes de abrir el store SQLite, para reducir errores en primer arranque (simulador incluido).
 - Si se añaden propiedades al modelo persistido (p. ej. `unlockedAbilitiesData`), conviene probar en dispositivo/simulador limpio o planificar migración ligera; de lo contrario un almacén antiguo puede fallar al cargar hasta reinstalar o resetear datos de la app.
 
 ## Arcade lanzado desde el mundo
