@@ -1,6 +1,6 @@
 # Atrapa un cuadrado
 
-Juego arcade para **iOS** hecho con **Swift**, **UIKit** y **SpriteKit**. El jugador mueve un personaje por la pantalla, atrapa cuadrados, esquiva obstáculos y progresa entre modos, personajes y mejoras.
+Juego para **iOS** hecho con **Swift**, **UIKit** y **SpriteKit**: arcade clásico (**Clásico**, **Arsenal**, **Fantasma**) más el modo persistente **Artificial World** (mapa, refugio, SwiftData). El jugador atrapa cuadrados, esquiva obstáculos y progresa entre personajes y mejoras.
 
 **Repositorio:** [github.com/hermoso92/atrapauncuadrado](https://github.com/hermoso92/atrapauncuadrado)
 
@@ -35,34 +35,42 @@ xcodebuild -scheme "Atrapa un cuadrado" -destination 'platform=iOS Simulator,nam
 
 ### Punto de entrada y pantalla de juego
 
-- `AppDelegate` / ciclo de vida de la app.
-- `SceneDelegate` crea la ventana y pone como raíz un `GameViewController`.
-- `GameViewController` envuelve un `SKView` y presenta la primera escena del flujo de menús.
+- `App/AppDelegate.swift` — ciclo de vida de la app.
+- `App/SceneDelegate.swift` — ventana raíz con `GameViewController` y arranque SwiftData del mundo (`ArtificialWorldPersistence.bootstrapIfNeeded()`).
+- `App/GameViewController.swift` — `SKView` y primera escena: **`ModeSelectScene`**.
 
 ### Flujo de escenas (SpriteKit)
 
-1. **`ModeSelectScene`** — Pantalla inicial: banco de monedas, elección entre modos (**Clásico**, **Arsenal**, **Fantasma**) y acceso a tienda / ajustes.
-2. Desde ahí se navega a menús de personaje, partida (`GameScene`), game over, tienda, etc., según las acciones del jugador.
+1. **`ModeSelectScene`** (`Features/Arcade/Scenes/`) — Pantalla inicial: banco de monedas y **cuatro** modos: **Clásico**, **Arsenal**, **Fantasma** y **Artificial World** (cuarta tarjeta). Los tres arcade siguen yendo a `MainMenuScene` → personaje / partida / tienda; Artificial World abre `ArtificialWorldScene`.
+2. Arcade: `GameScene`, game over, tienda, ajustes, etc.
+3. Mundo: `ArtificialWorldScene` con persistencia local vía `WorldRepository` (SwiftData).
 
-`BaseScene` concentra utilidades comunes (fondos, paneles, botones `MenuButtonNode`, acceso a `SaveManager`, `SoundManager`, etc.).
+`BaseScene` concentra utilidades comunes (fondos, paneles, `MenuButtonNode`, `SceneDependencies`, etc.).
 
 ### Módulos principales (carpetas)
 
 | Carpeta | Rol |
 |---------|-----|
-| `Core/` | Constantes de juego (`GameConfig`), perfiles por modo (`GameModeProfile`), paleta (`Palette`), máscaras de física. |
-| `Entities/` | Nodos del mundo: `PlayerNode`, `SquareNode`, `ObstacleNode`. |
-| `Models/` | `GameMode`, `GameProgress`, personajes (`CharacterDefinition`), habilidades, armas, mejoras. |
-| `Managers/` | Persistencia (`SaveManager`), sonido, hápticos, compras y tienda. |
-| `Scenes/` | Todas las escenas SpriteKit del menú y del juego. |
-| `UI/` | Componentes reutilizables (por ejemplo `MenuButtonNode`). |
-| `Utilities/` | Geometría y helpers (`UIColor+Hex`). |
+| `App/` | `AppDelegate`, `SceneDelegate`, `GameViewController`. |
+| `Features/Arcade/` | Arcade: escenas (`Scenes/`), `ArcadeRunTimers`. |
+| `Features/ArtificialWorld/` | Modo persistente: `ArtificialWorldScene`, `WorldAgentBrain`, `ArtificialWorldSimulation`. |
+| `Domain/` | Modelos y protocolos sin SpriteKit (mundo, telemetría, repositorio). |
+| `Persistence/` | SwiftData: `SwiftDataWorldRepository`, modelos persistidos. |
+| `Services/` | `SceneDependencies`, telemetría, preferencias de arranque, puente arcade↔mundo. |
+| `Networking/` | Contratos de sync futuros (`WorldSyncProtocols`). |
+| `Core/` | `GameConfig`, `GameModeProfile`, `Palette`, física. |
+| `Entities/` | `PlayerNode`, `SquareNode`, `ObstacleNode`. |
+| `Models/` | `GameMode`, `GameProgress`, personajes, habilidades, armas. |
+| `Managers/` | `SaveManager`, sonido, hápticos, compras. |
+| `UI/` | `MenuButtonNode` y componentes UI. |
+| `Utilities/` | Geometría y helpers. |
+| `docs/` | Documentación técnica; ver `ARTIFICIAL_WORLD_FASE0.md`. |
 
 ### Datos guardados
 
-- `SaveManager` serializa `GameProgress` en **UserDefaults** (clave `atrapa_un_cuadrado.progress`).
-- Incluye migración desde formatos antiguos si existían datos previos.
-- Opciones de depuración (p. ej. *god mode* en progreso) están pensadas para desarrollo; revísalas antes de publicar.
+- **Arcade / metajuego:** `SaveManager` + **UserDefaults** (`atrapa_un_cuadrado.progress`), con migración desde formatos antiguos.
+- **Artificial World:** **SwiftData** (estado de mundo, inventario, memoria del agente) a través de `ArtificialWorldPersistence`.
+- Opciones de depuración (*god mode*, etc.) revisar antes de publicar.
 
 ### Compras y desbloqueos
 

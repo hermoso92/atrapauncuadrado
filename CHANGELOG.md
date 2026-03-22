@@ -16,6 +16,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ### Cambiado
 
+- `README.md`: estructura actual (`App/`, `Features/`, Artificial World, SwiftData) y flujo de cuatro modos.
 - `ModeSelectScene`: layout de cuatro tarjetas **adaptativo** a la altura de la escena (teléfonos bajos vs altos).
 - `ArtificialWorldPersistence`: creación explícita de **Application Support** antes del store SwiftData.
 - Escenas SpriteKit del arcade movidas a `Features/Arcade/Scenes/`; `AppDelegate` / `SceneDelegate` / `GameViewController` en `App/`.
