@@ -16,6 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
+        ArtificialWorldPersistence.bootstrapIfNeeded()
+
         let window = UIWindow(windowScene: windowScene)
         let viewController = GameViewController()
         window.rootViewController = viewController

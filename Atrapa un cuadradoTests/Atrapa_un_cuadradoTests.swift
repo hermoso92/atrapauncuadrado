@@ -256,4 +256,58 @@ struct Atrapa_un_cuadradoTests {
         #expect(progress.selectedCharacterID(for: .ghost) == CharacterDefinition.prism.id)
         #expect(saveManager.loadProgress().ghostModeUnlocked)
     }
+
+    // MARK: - Artificial World (simulación y dominio)
+
+    @Test func artificialWorldSimulationShelterScalesWithLevel() async throws {
+        #expect(ArtificialWorldSimulation.shelterScale(level: 1) == 1)
+        #expect(ArtificialWorldSimulation.shelterScale(level: 2) > 1)
+        #expect(ArtificialWorldSimulation.shelterScale(level: 99) == 1 + 5 * 0.07)
+    }
+
+    @Test func artificialWorldSimulationRegenAndDecayBehaveMonotonically() async throws {
+        var hunger = 0.5
+        var energy = 0.5
+        ArtificialWorldSimulation.decayOutsideShelter(delta: 1, hunger: &hunger, energy: &energy)
+        #expect(hunger < 0.5)
+        #expect(energy < 0.5)
+
+        hunger = 0.2
+        energy = 0.2
+        ArtificialWorldSimulation.regenInsideShelter(delta: 1, multiplier: 2, hunger: &hunger, energy: &energy)
+        #expect(hunger > 0.2)
+        #expect(energy > 0.2)
+        #expect(hunger <= 1)
+        #expect(energy <= 1)
+    }
+
+    @Test func artificialWorldSimulationResourceCountShelterCostCaptureAndSprint() async throws {
+        #expect(ArtificialWorldSimulation.resourceItemCount(inventoryItemIds: ["a", "res_x", "res_y"]) == 2)
+        #expect(ArtificialWorldSimulation.shelterUpgradeCost(currentLevel: 1) == 2)
+        #expect(ArtificialWorldSimulation.shelterUpgradeCost(currentLevel: 4) == 8)
+        #expect(ArtificialWorldSimulation.effectiveCaptureRadius(base: 100, wideCaptureActive: true) == 148)
+        #expect(ArtificialWorldSimulation.speedMultiplier(sprintActive: true) == 1.55)
+    }
+
+    @Test func artificialWorldSnapshotEmptyUnlockListMeansAllAbilitiesUsable() async throws {
+        let snap = ArtificialWorldSnapshot(
+            worldId: UUID(),
+            playerPositionX: 0,
+            playerPositionY: 0,
+            hunger: 1,
+            energy: 1,
+            shelterLevel: 1,
+            inventoryItemIds: [],
+            controlModeRaw: "manual",
+            lastSavedAt: Date(),
+            unlockedWorldAbilityRaws: []
+        )
+        #expect(snap.canUse(.sprint))
+        #expect(snap.canUse(.dash))
+
+        var restricted = snap
+        restricted.unlockedWorldAbilityRaws = [WorldAbility.returnToShelter.rawValue]
+        #expect(restricted.canUse(.returnToShelter))
+        #expect(!restricted.canUse(.sprint))
+    }
 }

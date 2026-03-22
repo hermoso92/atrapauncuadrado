@@ -7,15 +7,25 @@ final class GameOverScene: BaseScene {
     private let bestScore: Int
     private let coinsEarned: Int
     private let roundReached: Int
+    private let returnToArtificialWorld: Bool
     private var hasMovedToView = false
 
-    init(sceneSize: CGSize, gameMode: GameMode, score: Int, bestScore: Int, coinsEarned: Int, roundReached: Int) {
+    init(
+        sceneSize: CGSize,
+        gameMode: GameMode,
+        score: Int,
+        bestScore: Int,
+        coinsEarned: Int,
+        roundReached: Int,
+        returnToArtificialWorld: Bool = false
+    ) {
         self.mode = gameMode
         self.profile = GameModeProfile.profile(for: gameMode)
         self.score = score
         self.bestScore = bestScore
         self.coinsEarned = coinsEarned
         self.roundReached = roundReached
+        self.returnToArtificialWorld = returnToArtificialWorld
         super.init(sceneSize: sceneSize, gameMode: gameMode)
     }
 
@@ -188,7 +198,17 @@ final class GameOverScene: BaseScene {
         case "menu":
             soundManager.playButtonTap()
             hapticsManager.tap()
-            present(MainMenuScene(sceneSize: size, gameMode: mode))
+            if returnToArtificialWorld {
+                ArcadeWorldBridge.returnToArtificialWorldAfterRun = false
+                _ = saveManager.update { progress in
+                    progress.coins += max(1, coinsEarned / 8)
+                }
+                let repo = ArtificialWorldPersistence.worldRepository()
+                let memory = ArtificialWorldPersistence.agentMemoryStore()
+                present(ArtificialWorldScene(sceneSize: size, worldRepository: repo, memoryStore: memory))
+            } else {
+                present(MainMenuScene(sceneSize: size, gameMode: mode))
+            }
         default:
             break
         }

@@ -2,17 +2,19 @@ import SpriteKit
 
 @MainActor
 class BaseScene: SKScene {
-    let saveManager = SaveManager.shared
-    let storeManager = StoreManager.shared
-    let purchaseManager = PurchaseManager.shared
-    let soundManager = SoundManager.shared
-    let hapticsManager = HapticsManager.shared
+    let deps: SceneDependencies
+    var saveManager: SaveManager { deps.saveManager }
+    var storeManager: StoreManager { deps.storeManager }
+    var purchaseManager: PurchaseManager { deps.purchaseManager }
+    var soundManager: SoundManager { deps.soundManager }
+    var hapticsManager: HapticsManager { deps.hapticsManager }
     let gameMode: GameMode?
     var modeProfile: GameModeProfile? {
         gameMode.map(GameModeProfile.profile(for:))
     }
 
-    init(sceneSize: CGSize, gameMode: GameMode? = nil) {
+    init(sceneSize: CGSize, gameMode: GameMode? = nil, dependencies: SceneDependencies? = nil) {
+        self.deps = dependencies ?? .live
         self.gameMode = gameMode
         super.init(size: sceneSize)
         scaleMode = .resizeFill

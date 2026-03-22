@@ -56,13 +56,9 @@ final class GameScene: BaseScene {
     private var state: State = .active
     private var lastUpdateTime: TimeInterval = 0
     private var elapsedTime: TimeInterval = 0
-    private var spawnTimer: TimeInterval = 0
-    private var difficultyTimer: TimeInterval = 0
-    private var squareSpeedMultiplier: CGFloat = 1
-    private var spawnInterval: TimeInterval
+    private var runTimers: ArcadeRunTimersState
     private var score = 0
     private var coinsEarned = 0
-    private var round: Int
     private var damageCooldownEndsAt: TimeInterval = 0
     private var weaponCooldownEndsAt: TimeInterval = 0
     private var autoFireEndsAt: TimeInterval = 0
@@ -120,11 +116,10 @@ final class GameScene: BaseScene {
         }
     }
 
-    init(sceneSize: CGSize, gameMode: GameMode) {
+    init(sceneSize: CGSize, gameMode: GameMode, dependencies: SceneDependencies? = nil) {
         self.profile = GameModeProfile.profile(for: gameMode)
-        self.spawnInterval = profile.initialSpawnInterval
-        self.round = profile.startingRound
-        super.init(sceneSize: sceneSize, gameMode: gameMode)
+        self.runTimers = ArcadeRunTimersState(spawnInterval: profile.initialSpawnInterval, round: profile.startingRound)
+        super.init(sceneSize: sceneSize, gameMode: gameMode, dependencies: dependencies)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -161,8 +156,6 @@ final class GameScene: BaseScene {
         let deltaTime = min(1.0 / 25.0, currentTime - lastUpdateTime)
         lastUpdateTime = currentTime
         elapsedTime += deltaTime
-        spawnTimer += deltaTime
-        difficultyTimer += deltaTime
         if comboCount > 0, currentTime > comboExpiresAt {
             resetCombo(showStatusMessage: comboCount >= 4)
         }
@@ -196,19 +189,18 @@ final class GameScene: BaseScene {
                 playableRect: playableRect,
                 obstacles: obstacles,
                 playerPosition: player.position,
-                speedMultiplier: squareSpeedMultiplier
+                speedMultiplier: runTimers.squareSpeedMultiplier
             )
         }
 
         updateProjectiles(deltaTime: deltaTime)
         handleAutoFire(currentTime: currentTime)
         handleSquareInteractions(currentTime: currentTime)
-        if spawnTimer >= spawnInterval, squares.count < profile.maxSquares {
-            spawnTimer = 0
+        let tick = runTimers.advance(deltaTime: deltaTime, profile: profile, squareCount: squares.count)
+        if tick.shouldSpawn {
             spawnSquare()
         }
-        if difficultyTimer >= profile.difficultyStepInterval {
-            difficultyTimer = 0
+        if tick.shouldStepDifficulty {
             increaseDifficulty()
         }
 
@@ -295,11 +287,7 @@ final class GameScene: BaseScene {
         state = .active
         score = 0
         coinsEarned = 0
-        round = profile.startingRound
-        squareSpeedMultiplier = 1
-        spawnInterval = profile.initialSpawnInterval
-        spawnTimer = 0
-        difficultyTimer = 0
+        runTimers = ArcadeRunTimersState(spawnInterval: profile.initialSpawnInterval, round: profile.startingRound)
         elapsedTime = 0
         damageCooldownEndsAt = 0
         weaponCooldownEndsAt = 0
@@ -594,7 +582,7 @@ final class GameScene: BaseScene {
             ]
         ]
 
-        let selectedLayout = layouts[(round - 1) % layouts.count]
+        let selectedLayout = layouts[(runTimers.round - 1) % layouts.count]
         for rect in selectedLayout {
             let obstacle = ObstacleNode(rect: rect)
             worldNode.addChild(obstacle)
@@ -603,10 +591,10 @@ final class GameScene: BaseScene {
     }
 
     private func spawnSquare(kind forcedKind: SquareKind? = nil) {
-        let kind = forcedKind ?? nextSquareKind(for: round)
+        let kind = forcedKind ?? nextSquareKind(for: runTimers.round)
         let position = randomSpawnPosition()
         let velocity = CGVector.randomUnit.scaled(
-            by: GameConfig.squareBaseSpeed * kind.speedMultiplier * squareSpeedMultiplier
+            by: GameConfig.squareBaseSpeed * kind.speedMultiplier * runTimers.squareSpeedMultiplier
         )
         let square = SquareNode(kind: kind, position: position, velocity: velocity)
         applyVisualStyle(to: square)
@@ -761,9 +749,7 @@ final class GameScene: BaseScene {
     }
 
     private func increaseDifficulty() {
-        round += 1
-        squareSpeedMultiplier += profile.squareSpeedRamp
-        spawnInterval = max(profile.spawnIntervalFloor, spawnInterval - profile.spawnIntervalStep)
+        runTimers.applyDifficultyStep(profile: profile)
 
         if profile.allowsObstacles {
             obstacles.forEach { $0.removeFromParent() }
@@ -779,8 +765,8 @@ final class GameScene: BaseScene {
         }
 
         let message = profile.mode == .original
-            ? "\(profile.roundLabelTitle) \(round): sube la velocidad."
-            : (round >= 4 ? "\(profile.roundLabelTitle) \(round): entran patrones agresivos." : "\(profile.roundLabelTitle) \(round): la tension escala.")
+            ? "\(profile.roundLabelTitle) \(runTimers.round): sube la velocidad."
+            : (runTimers.round >= 4 ? "\(profile.roundLabelTitle) \(runTimers.round): entran patrones agresivos." : "\(profile.roundLabelTitle) \(runTimers.round): la tension escala.")
         showStatus(message, color: Palette.warning)
         if profile.mode != .original {
             hapticsManager.warning()
@@ -791,8 +777,8 @@ final class GameScene: BaseScene {
         scoreLabel.text = "Score \(score)"
         coinsLabel.text = "Run +\(coinsEarned) monedas   Banco \(progress.coins + coinsEarned)"
         roundLabel.text = profile.mode == .original
-            ? "\(profile.roundLabelTitle) \(round)   Cuadrados \(squares.count)"
-            : "\(profile.roundLabelTitle) \(round)   Cuadrados \(squares.count)   Ritmo \(String(format: "%.1f", squareSpeedMultiplier))x"
+            ? "\(profile.roundLabelTitle) \(runTimers.round)   Cuadrados \(squares.count)"
+            : "\(profile.roundLabelTitle) \(runTimers.round)   Cuadrados \(squares.count)   Ritmo \(String(format: "%.1f", runTimers.squareSpeedMultiplier))x"
         modeLabel.text = profile.mode != .original ? "\(gameMode?.productTitle ?? "") / \(currentWeapon.title)" : gameMode?.productTitle
         let comboTier = comboTier
         comboLabel.text = comboCount >= 2 ? "Combo x\(comboTier)  •  \(comboCount)" : nil
@@ -986,7 +972,8 @@ final class GameScene: BaseScene {
             score: score,
             bestScore: updatedProgress.highScore(for: gameMode),
             coinsEarned: coinsEarned,
-            roundReached: round
+            roundReached: runTimers.round,
+            returnToArtificialWorld: ArcadeWorldBridge.returnToArtificialWorldAfterRun
         )
         present(scene)
     }
@@ -1432,11 +1419,11 @@ final class GameScene: BaseScene {
     }
 
     private func advanceToNextPhase() {
-        round += 1
-        squareSpeedMultiplier *= 1.1
-        spawnInterval = max(0.36, spawnInterval * 0.88)
-        spawnTimer = 0
-        difficultyTimer = 0
+        runTimers.round += 1
+        runTimers.squareSpeedMultiplier *= 1.1
+        runTimers.spawnInterval = max(0.36, runTimers.spawnInterval * 0.88)
+        runTimers.spawnTimer = 0
+        runTimers.difficultyTimer = 0
         targetPoint = nil
         resetJoystick()
 
@@ -1454,13 +1441,13 @@ final class GameScene: BaseScene {
         pauseOverlay.isHidden = true
         state = .active
 
-        let spawnCount = min(profile.maxSquares, profile.initialSquares + round)
+        let spawnCount = min(profile.maxSquares, profile.initialSquares + runTimers.round)
         for _ in 0..<spawnCount {
             spawnSquare()
         }
         if profile.mode != .original, squares.allSatisfy({ $0.kind != .aggressive }) {
             spawnSquare(kind: .aggressive)
         }
-        showStatus("Fase \(round). Arena recombinada.", color: Palette.stroke)
+        showStatus("Fase \(runTimers.round). Arena recombinada.", color: Palette.stroke)
     }
 }

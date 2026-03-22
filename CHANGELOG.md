@@ -2,6 +2,23 @@
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y el proyecto usa [Versionado semántico](https://semver.org/lang/es/).
 
+## [Unreleased]
+
+### Añadido
+
+- **Selector de modos** (`ModeSelectScene`): entrada desde `GameViewController` con **cuatro** rutas (Clásico, Arsenal, Fantasma, Artificial World); `AppLaunchPreferences.lastExperience` distingue arcade vs mundo para telemetría o futuras mejoras.
+- **Artificial World — progresión y arcade**: nivel de refugio con escala/regeneración vía `ArtificialWorldSimulation`; botones de habilidades de mundo con cooldowns; puente `ArcadeWorldBridge` para lanzar `GameScene` desde el mundo y volver con bonus de monedas al game over; protocolos de sync en `Networking/WorldSyncProtocols.swift` (stubs / NoOp).
+- **Artificial World**: modo persistente con mapa base, refugio, entidades (cuadrados común/nutritivo/hostil/raro/recurso), hambre/energía, inventario mínimo, HUD, guardado **SwiftData** (`WorldRepository`), memoria resumida del agente, agente por utilidades + estados (`WorldAgentBrain`), control manual/automático/híbrido y telemetría en debug (`AppTelemetry`).
+- **Dominio**: protocolos en `Domain/Protocols/` (repositorio de mundo, telemetría, reloj de simulación, auth anónima, memoria del agente).
+- **Arquitectura**: carpetas `App/`, `Features/Arcade/`, `Features/ArtificialWorld/`, `Persistence/`, `Services/`; documentación en `docs/ARTIFICIAL_WORLD_FASE0.md`.
+- Entrada **Artificial World** en la pantalla de selección principal (`ModeSelectScene`).
+
+### Cambiado
+
+- Escenas SpriteKit del arcade movidas a `Features/Arcade/Scenes/`; `AppDelegate` / `SceneDelegate` / `GameViewController` en `App/`.
+- `BaseScene` usa `SceneDependencies` en lugar de singletons directos como propiedades almacenadas.
+- `GameScene`: temporizadores de spawn y dificultad centralizados en `ArcadeRunTimersState` (sin cambiar reglas de juego).
+
 ## [1.0.0] — 2026-03-21
 
 ### Añadido
