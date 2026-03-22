@@ -33,8 +33,24 @@ jobs:
           set -o pipefail
           xcodebuild test \
             -scheme "Atrapa un cuadrado" \
+            -configuration Debug \
             -sdk iphonesimulator \
             -destination 'platform=iOS Simulator,name=iPhone 16' \
             -only-testing:"Atrapa un cuadradoTests" \
+            -parallel-testing-enabled NO \
+            IPHONEOS_DEPLOYMENT_TARGET=18.0
+
+      # SpriteKit + accesibilidad en runner: a veces falla sin ser regresión de producto.
+      # El job sigue en verde; revisar el paso si aparece advertencia (amarillo).
+      - name: UI smoke tests
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme "Atrapa un cuadrado" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:"Atrapa un cuadradoUITests/Atrapa_un_cuadradoUITests/testNavigateToArtificialWorldAndWait" \
             -parallel-testing-enabled NO \
             IPHONEOS_DEPLOYMENT_TARGET=18.0

@@ -10,12 +10,7 @@ import XCTest
 final class Atrapa_un_cuadradoUITests: XCTestCase {
 
     override func setUpWithError() throws {
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // Terminate the app before each test so launch performance metrics
-        // start from a cold state on every iteration.
-        XCUIApplication().terminate()
     }
 
     override func tearDownWithError() throws {
@@ -24,11 +19,43 @@ final class Atrapa_un_cuadradoUITests: XCTestCase {
 
     @MainActor
     func testExample() throws {
-        // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
+    }
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    /// Selector de modos → Mundo artificial → espera 5 s → captura (útil para revisar logs/UI en CI o local).
+    @MainActor
+    func testNavigateToArtificialWorldAndWait() throws {
+        let app = XCUIApplication()
+        app.launch()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15), "La app debería estar en primer plano tras launch")
+
+        let worldLabel = NSPredicate(format: "label CONTAINS[c] %@", "Mundo artificial")
+        let worldCard = app.descendants(matching: .any).matching(worldLabel).element(boundBy: 0)
+        if worldCard.waitForExistence(timeout: 15) {
+            worldCard.tap()
+        } else {
+            let c = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.64))
+            c.tap()
+            if !worldCard.waitForExistence(timeout: 3) {
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.70)).tap()
+            }
+        }
+
+        let inWorldPredicate = NSPredicate(format: "label CONTAINS[c] %@", "UITest Pantalla Mundo artificial")
+        let inWorld = app.descendants(matching: .any).matching(inWorldPredicate).element(boundBy: 0)
+        XCTAssertTrue(inWorld.waitForExistence(timeout: 15), "Tras tocar la tarjeta debería mostrarse Artificial World")
+
+        let idle = XCTestExpectation(description: "espera en mundo")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            idle.fulfill()
+        }
+        wait(for: [idle], timeout: 8)
+
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "ArtificialWorld_after_5s"
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     @MainActor

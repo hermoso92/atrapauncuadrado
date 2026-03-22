@@ -1,7 +1,7 @@
 import SpriteKit
 import UIKit
 
-private let squareSize: CGFloat = 24
+let squareSize: CGFloat = 24
 
 private func fillColor(for kind: ArtificialWorldSquareKind) -> UIColor {
     switch kind {
@@ -17,15 +17,14 @@ private func fillColor(for kind: ArtificialWorldSquareKind) -> UIColor {
 final class ArtificialWorldScene: BaseScene {
     private let worldRepository: WorldRepository
     private let memoryStore: AgentMemoryStore
-    private let telemetry: TelemetryLogging
     private let clock: GameClock
 
-    private let worldNode = SKNode()
-    private let hudNode = SKNode()
-    private let playerNode = SKShapeNode(circleOfRadius: GameConfig.playerRadius)
-    private var snapshot: ArtificialWorldSnapshot
-    private var squares: [WorldSquareBody] = []
-    private var squareNodes: [UUID: SKShapeNode] = [:]
+    let worldNode = SKNode()
+    let hudNode = SKNode()
+    let playerNode = SKShapeNode(circleOfRadius: GameConfig.playerRadius)
+    var snapshot: ArtificialWorldSnapshot
+    var squares: [WorldSquareBody] = []
+    var squareNodes: [UUID: SKShapeNode] = [:]
 
     private var targetPoint: CGPoint?
     private var lastUpdateTime: TimeInterval = 0
@@ -57,7 +56,7 @@ final class ArtificialWorldScene: BaseScene {
     private var scanUntil: TimeInterval = 0
     private var autoGatherUntil: TimeInterval = 0
 
-    private var worldBounds: CGRect {
+    var worldBounds: CGRect {
         CGRect(
             x: GameConfig.worldInset,
             y: 118,
@@ -73,11 +72,11 @@ final class ArtificialWorldScene: BaseScene {
         return CGRect(x: worldBounds.midX - w / 2, y: worldBounds.minY + 18, width: w, height: h)
     }
 
-    private var shelterCenter: CGPoint {
+    var shelterCenter: CGPoint {
         CGPoint(x: shelterRect.midX, y: shelterRect.midY)
     }
 
-    private var shelterRadius: CGFloat {
+    var shelterRadius: CGFloat {
         max(shelterRect.width, shelterRect.height) / 2
     }
 
@@ -86,12 +85,10 @@ final class ArtificialWorldScene: BaseScene {
         dependencies: SceneDependencies? = nil,
         worldRepository: WorldRepository,
         memoryStore: AgentMemoryStore,
-        telemetry: TelemetryLogging? = nil,
         clock: GameClock? = nil
     ) {
         self.worldRepository = worldRepository
         self.memoryStore = memoryStore
-        self.telemetry = telemetry ?? AppTelemetry.shared
         self.clock = clock ?? SystemGameClock()
         self.snapshot = ArtificialWorldSnapshot(
             worldId: UUID(),
@@ -372,6 +369,14 @@ final class ArtificialWorldScene: BaseScene {
         addChild(worldNode)
         addChild(hudNode)
 
+        let uiTestMarker = SKSpriteNode(color: .clear, size: CGSize(width: 44, height: 44))
+        uiTestMarker.name = "uitest.artificialWorld.marker"
+        uiTestMarker.isAccessibilityElement = true
+        uiTestMarker.accessibilityLabel = "UITest Pantalla Mundo artificial"
+        uiTestMarker.position = CGPoint(x: 26, y: size.height - 28)
+        uiTestMarker.zPosition = 200
+        hudNode.addChild(uiTestMarker)
+
         let frame = SKShapeNode(rect: worldBounds, cornerRadius: 22)
         frame.fillColor = UIColor(red: 0.04, green: 0.06, blue: 0.09, alpha: 0.92)
         frame.strokeColor = Palette.accent
@@ -554,7 +559,7 @@ final class ArtificialWorldScene: BaseScene {
         #endif
     }
 
-    private func showBriefStatus(_ text: String, color: UIColor) {
+    func showBriefStatus(_ text: String, color: UIColor) {
         agentLabel.text = text
         agentLabel.fontColor = color
         run(.sequence([.wait(forDuration: 0.9), .run { [weak self] in

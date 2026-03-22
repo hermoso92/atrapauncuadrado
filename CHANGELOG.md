@@ -4,8 +4,20 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+### Añadido
+
+- **Logging**: `AppLog` (`Logger` / OSLog) con subsistema = bundle id; categorías `lifecycle`, `scene`, `persistence`, `telemetry`, `purchase`; eventos de telemetría reflejados en consola; logs en transiciones `present` hacia `GameScene`, `ArtificialWorldScene` y `GameOverScene`.
+- **Scripts**: `scripts/stream-app-oslog.sh` (`sim` | `mac`) para `log stream` filtrado por subsistema.
+- **UI tests**: `testNavigateToArtificialWorldAndWait` (selector → mundo artificial → captura); accesibilidad en tarjeta de mundo y marcador en `ArtificialWorldScene` para el test.
+
+### Cambiado
+
+- **UI test** `testNavigateToArtificialWorldAndWait`: espera explícita a primer plano (`runningForeground`), timeouts 15s y segundo tap por coordenadas si la tarjeta no aparece por accesibilidad.
+- **CI** (`.github/workflows/ios.yml`): pasos `test` con `-configuration Debug`, alineado con el build local; paso **UI smoke** con `continue-on-error: true` para no tumbar el job por flakiness del simulador / SpriteKit (el paso se marca advertencia si falla).
+
 ### Corregido
 
+- **Swift 6 / concurrencia**: `SceneDependencies` marcado como `@MainActor` para que los valores por defecto `.shared` no violen el aislamiento del actor principal.
 - **Artificial World / BaseScene**: evitar `CGFloat.random(in:)` con rangos inválidos (pantalla baja o `didChangeSize` intermedio), que podían **cerrar la app** al reconstruir el escenario o el fondo.
 - **Artificial World**: `spawnInitialSquares` comprueba que el rectángulo del mundo sea válido antes de posiciones aleatorias; **HUD con `zPosition` más alto** para que los botones reciban el toque antes que el mapa.
 

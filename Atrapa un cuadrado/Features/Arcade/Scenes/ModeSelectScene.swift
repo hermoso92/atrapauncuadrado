@@ -94,6 +94,7 @@ final class ModeSelectScene: BaseScene {
     override func didMove(to view: SKView) {
         progress = saveManager.loadProgress()
         hasLoadedProgress = true
+        telemetry.logEvent("arcade_mode_select_shown", parameters: [:])
         buildScene()
         Task { @MainActor [weak self] in
             await self?.purchaseManager.refreshEntitlements()
@@ -181,6 +182,7 @@ final class ModeSelectScene: BaseScene {
         let location = touch.location(in: self)
 
         if nodeName(at: location, withPrefix: "world.") == "world.artificial" {
+            telemetry.logEvent("arcade_mode_select_world", parameters: [:])
             soundManager.playButtonTap()
             hapticsManager.tap()
             AppLaunchPreferences.lastExperience = .artificialWorld
@@ -209,6 +211,7 @@ final class ModeSelectScene: BaseScene {
             progress.lastSelectedMode = mode
         }
         AppLaunchPreferences.lastExperience = .arcadeHub
+        telemetry.logEvent("arcade_mode_selected", parameters: ["mode": mode.rawValue])
         soundManager.playButtonTap()
         hapticsManager.tap()
         present(MainMenuScene(sceneSize: size, gameMode: mode))
@@ -224,6 +227,8 @@ final class ModeSelectScene: BaseScene {
             cornerRadius: m.panelCorner
         )
         card.name = "world.artificial"
+        card.isAccessibilityElement = true
+        card.accessibilityLabel = "Mundo artificial, Artificial World"
         card.lineWidth = 2.5
         card.glowWidth = 4
 

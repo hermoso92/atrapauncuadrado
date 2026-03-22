@@ -1,4 +1,5 @@
 import Foundation
+import os
 import SwiftData
 
 /// Arranque único del contenedor SwiftData para Artificial World.
@@ -25,7 +26,9 @@ enum ArtificialWorldPersistence {
             let container = try ModelContainer(for: schema, configurations: [configuration])
             let context = ModelContext(container)
             repository = SwiftDataWorldRepository(context: context)
+            AppLog.persistence.info("SwiftData store ready (on disk)")
         } catch {
+            AppLog.persistence.error("SwiftData on-disk bootstrap failed: \(String(describing: error), privacy: .public)")
             assertionFailure("SwiftData bootstrap failed: \(error)")
             do {
                 let schema = Schema([PersistedWorldState.self, PersistedAgentMemoryRecord.self])
@@ -33,7 +36,9 @@ enum ArtificialWorldPersistence {
                 let container = try ModelContainer(for: schema, configurations: [configuration])
                 let context = ModelContext(container)
                 repository = SwiftDataWorldRepository(context: context)
+                AppLog.persistence.warning("SwiftData using in-memory fallback")
             } catch {
+                AppLog.persistence.critical("SwiftData in-memory fallback failed: \(String(describing: error), privacy: .public)")
                 fatalError("SwiftData in-memory fallback failed: \(error)")
             }
         }

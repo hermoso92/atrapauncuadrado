@@ -5,6 +5,7 @@
 //  Created by Antonio Hermoso on 20/3/26.
 //
 
+import os
 import SpriteKit
 import UIKit
 
@@ -60,6 +61,8 @@ final class GameViewController: UIViewController {
 
         let scene = ModeSelectScene(sceneSize: view.bounds.size)
         scene.scaleMode = .resizeFill
+        let b = view.bounds
+        AppLog.scene.info("present ModeSelectScene w=\(b.width, privacy: .public) h=\(b.height, privacy: .public)")
         skView.presentScene(scene)
     }
 }

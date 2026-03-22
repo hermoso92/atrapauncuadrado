@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 @MainActor
 final class AppTelemetry: TelemetryLogging {
@@ -10,6 +11,17 @@ final class AppTelemetry: TelemetryLogging {
     #endif
 
     func logEvent(_ name: String, parameters: [String: String]) {
+        let paramsText: String
+        if parameters.isEmpty {
+            paramsText = ""
+        } else {
+            paramsText = parameters
+                .sorted { $0.key < $1.key }
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: " ")
+        }
+        AppLog.telemetry.info("event=\(name, privacy: .public) \(paramsText, privacy: .public)")
+
         #if DEBUG
         recentEvents.append((name, parameters, Date()))
         if recentEvents.count > maxDebugEvents {

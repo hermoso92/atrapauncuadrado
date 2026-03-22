@@ -129,6 +129,10 @@ final class GameScene: BaseScene {
     override func didMove(to view: SKView) {
         progress = saveManager.loadProgress()
         soundManager.playSoundscape(soundscape)
+        if let gameMode {
+            let source = ArcadeWorldBridge.returnToArtificialWorldAfterRun ? "world" : "hub"
+            telemetry.logEvent("arcade_run_started", parameters: ["mode": gameMode.rawValue, "source": source])
+        }
         buildScene()
     }
 
@@ -952,7 +956,7 @@ final class GameScene: BaseScene {
         }
     }
 
-    private func triggerGameOver(force: Bool = false) {
+    internal func triggerGameOver(force: Bool = false) {
         guard (!gameOverSaved || force),
               let gameMode else {
             return
@@ -965,6 +969,16 @@ final class GameScene: BaseScene {
         }
         soundManager.playGameOver()
         hapticsManager.error()
+
+        telemetry.logEvent(
+            "arcade_run_game_over",
+            parameters: [
+                "mode": gameMode.rawValue,
+                "score": "\(score)",
+                "coins_earned": "\(coinsEarned)",
+                "round": "\(runTimers.round)"
+            ]
+        )
 
         let scene = GameOverScene(
             sceneSize: size,

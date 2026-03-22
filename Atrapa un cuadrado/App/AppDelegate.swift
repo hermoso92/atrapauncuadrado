@@ -5,11 +5,13 @@
 //  Created by Antonio Hermoso on 20/3/26.
 //
 
+import os
 import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        AppLog.lifecycle.info("didFinishLaunching")
         PurchaseManager.shared.start()
         return true
     }

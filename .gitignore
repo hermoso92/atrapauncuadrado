@@ -14,5 +14,8 @@ DerivedData/
 /1.png
 /Captura de pantalla*.png
 
+# Agent Teams Lite
+.atl/
+
 # Otro proyecto / copia local: conservar en disco, no versionar
 /Artificial_world/

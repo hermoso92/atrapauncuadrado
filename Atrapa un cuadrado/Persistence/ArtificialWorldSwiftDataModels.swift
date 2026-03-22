@@ -13,6 +13,10 @@ final class PersistedWorldState {
     var controlModeRaw: String
     var lastSavedAt: Date
     var unlockedAbilitiesData: Data
+    // FASE5: Zone unlock flags (encoded Set<String>)
+    var zoneUnlockFlagsData: Data
+    // FASE5: Danger zones (encoded [DangerZone])
+    var dangerZonesData: Data
 
     init(
         worldId: UUID,
@@ -24,7 +28,9 @@ final class PersistedWorldState {
         inventoryItemIdsData: Data,
         controlModeRaw: String,
         lastSavedAt: Date,
-        unlockedAbilitiesData: Data = Data()
+        unlockedAbilitiesData: Data = Data(),
+        zoneUnlockFlagsData: Data = Data(),
+        dangerZonesData: Data = Data()
     ) {
         self.worldId = worldId
         self.playerPositionX = playerPositionX
@@ -36,6 +42,8 @@ final class PersistedWorldState {
         self.controlModeRaw = controlModeRaw
         self.lastSavedAt = lastSavedAt
         self.unlockedAbilitiesData = unlockedAbilitiesData
+        self.zoneUnlockFlagsData = zoneUnlockFlagsData
+        self.dangerZonesData = dangerZonesData
     }
 }
 
@@ -45,11 +53,47 @@ final class PersistedAgentMemoryRecord {
     var summary: String
     var createdAt: Date
     var relatedEventKind: String?
+    var dangerZonesData: Data
 
-    init(entryId: UUID, summary: String, createdAt: Date, relatedEventKind: String?) {
+    init(entryId: UUID, summary: String, createdAt: Date, relatedEventKind: String?, dangerZonesData: Data = Data()) {
         self.entryId = entryId
         self.summary = summary
         self.createdAt = createdAt
         self.relatedEventKind = relatedEventKind
+        self.dangerZonesData = dangerZonesData
+    }
+}
+
+// MARK: - Achievement Model
+
+@Model
+final class PersistedAchievement {
+    @Attribute(.unique) var achievementId: String
+    var unlockedAt: Date?
+    var notified: Bool
+
+    init(achievementId: String, unlockedAt: Date? = nil, notified: Bool = false) {
+        self.achievementId = achievementId
+        self.unlockedAt = unlockedAt
+        self.notified = notified
+    }
+
+    var isUnlocked: Bool {
+        unlockedAt != nil
+    }
+}
+
+// MARK: - Zone State Model
+
+@Model
+final class PersistedZoneState {
+    @Attribute(.unique) var zoneId: String
+    var unlocked: Bool
+    var unlockedAt: Date?
+
+    init(zoneId: String, unlocked: Bool = false, unlockedAt: Date? = nil) {
+        self.zoneId = zoneId
+        self.unlocked = unlocked
+        self.unlockedAt = unlockedAt
     }
 }

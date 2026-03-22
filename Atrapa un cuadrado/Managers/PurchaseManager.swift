@@ -1,4 +1,5 @@
 import Foundation
+import os
 import StoreKit
 
 extension Notification.Name {
@@ -42,6 +43,8 @@ final class PurchaseManager {
         guard updatesTask == nil else {
             return
         }
+
+        AppLog.purchase.info("PurchaseManager.start listening for transaction updates")
 
         updatesTask = Task(priority: .background) { [weak self] in
             guard let self else {

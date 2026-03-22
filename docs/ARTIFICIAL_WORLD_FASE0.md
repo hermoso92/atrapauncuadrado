@@ -1,6 +1,20 @@
 # Artificial World — FASE 0: inventario y arquitectura
 
+> **Estado de Fases**: FASE0 ✅ | FASE1-4 ✅ | **FASE5 ✅** | FASE6 ⏳ | FASE7 ⏳
+
 Este documento fija el inventario técnico de la raíz del proyecto, la arquitectura actual del arcade y la reestructura objetivo para **Artificial World** como sistema principal.
+
+## Fases del Artificial World
+
+| Fase | Estado | Descripción |
+|------|--------|-------------|
+| FASE0 | ✅ | Inventario y arquitectura (este documento) |
+| FASE1-4 | ✅ | MVP implementado (mapa, refugio, entidades, HUD, SwiftData) |
+| FASE5 | ✅ | Entidades expandidas, zonas, logros, defensa refugio |
+| FASE6 | ⏳ | Backend sync (protocolos stubs existentes) |
+| FASE7 | ⏳ | Multiplayer / Passive world evolution |
+
+Ver `ARTIFICIAL_WORLD_FASE5.md` para detalles de FASE5.
 
 ## Inventario raíz
 

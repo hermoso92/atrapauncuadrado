@@ -6,9 +6,9 @@ final class MainMenuScene: BaseScene {
     private let profile: GameModeProfile
     private var hasLoadedProgress = false
 
-    init(sceneSize: CGSize, gameMode: GameMode) {
+    init(sceneSize: CGSize, gameMode: GameMode, dependencies: SceneDependencies? = nil) {
         self.profile = GameModeProfile.profile(for: gameMode)
-        super.init(sceneSize: sceneSize, gameMode: gameMode)
+        super.init(sceneSize: sceneSize, gameMode: gameMode, dependencies: dependencies)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -18,6 +18,9 @@ final class MainMenuScene: BaseScene {
     override func didMove(to view: SKView) {
         progress = saveManager.loadProgress()
         hasLoadedProgress = true
+        if let gameMode {
+            telemetry.logEvent("arcade_main_menu_shown", parameters: ["mode": gameMode.rawValue])
+        }
         buildScene()
         Task { @MainActor [weak self] in
             await self?.purchaseManager.refreshEntitlements()

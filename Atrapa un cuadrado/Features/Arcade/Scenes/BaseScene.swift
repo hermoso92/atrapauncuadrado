@@ -1,3 +1,4 @@
+import os
 import SpriteKit
 
 @MainActor
@@ -8,6 +9,7 @@ class BaseScene: SKScene {
     var purchaseManager: PurchaseManager { deps.purchaseManager }
     var soundManager: SoundManager { deps.soundManager }
     var hapticsManager: HapticsManager { deps.hapticsManager }
+    var telemetry: TelemetryLogging { deps.telemetry }
     let gameMode: GameMode?
     var modeProfile: GameModeProfile? {
         gameMode.map(GameModeProfile.profile(for:))
@@ -196,6 +198,17 @@ class BaseScene: SKScene {
 
     func present(_ scene: SKScene) {
         scene.scaleMode = .resizeFill
+        // Nombres en runtime (evita referencias estáticas a subclases y ciclos de compilación).
+        switch String(describing: type(of: scene)) {
+        case "GameScene":
+            AppLog.scene.info("present GameScene")
+        case "ArtificialWorldScene":
+            AppLog.scene.info("present ArtificialWorldScene")
+        case "GameOverScene":
+            AppLog.scene.info("present GameOverScene")
+        default:
+            break
+        }
         view?.presentScene(scene, transition: .fade(withDuration: 0.22))
     }
 
