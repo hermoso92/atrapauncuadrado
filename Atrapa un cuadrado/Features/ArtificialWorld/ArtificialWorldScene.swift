@@ -140,6 +140,8 @@ final class ArtificialWorldScene: BaseScene {
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
+        // Tamaños intermedios (0 o casi 0) al rotar o redimensionar rompen CGFloat.random(in:) y cierran la app.
+        guard size.width >= 280, size.height >= 420, oldSize != size else { return }
         if !squares.isEmpty {
             buildLevel()
         }
@@ -363,6 +365,9 @@ final class ArtificialWorldScene: BaseScene {
         squares.removeAll()
         squareNodes.removeAll()
 
+        worldNode.zPosition = 0
+        hudNode.zPosition = 50
+
         setupBackdrop(title: "ARTIFICIAL WORLD", subtitle: "Mundo persistente. Refugio, recursos y agente.")
         addChild(worldNode)
         addChild(hudNode)
@@ -482,12 +487,20 @@ final class ArtificialWorldScene: BaseScene {
     }
 
     private func spawnInitialSquares() {
+        let pad: CGFloat = 40
+        let minX = worldBounds.minX + pad
+        let maxX = worldBounds.maxX - pad
+        let minY = worldBounds.minY + pad
+        let maxY = worldBounds.maxY - pad
+        guard minX < maxX, minY < maxY else {
+            return
+        }
         let kinds = ArtificialWorldSquareKind.allCases
         for _ in 0..<14 {
             let kind = kinds.randomElement()!
             let pos = CGPoint(
-                x: CGFloat.random(in: (worldBounds.minX + 40)...(worldBounds.maxX - 40)),
-                y: CGFloat.random(in: (worldBounds.minY + 40)...(worldBounds.maxY - 40))
+                x: CGFloat.random(in: minX...maxX),
+                y: CGFloat.random(in: minY...maxY)
             )
             if shelterRect.contains(pos) { continue }
             let vel = CGVector(dx: CGFloat.random(in: -55...55), dy: CGFloat.random(in: -55...55))

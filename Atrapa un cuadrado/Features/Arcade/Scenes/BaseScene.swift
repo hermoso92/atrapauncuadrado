@@ -80,14 +80,24 @@ class BaseScene: SKScene {
             .fadeAlpha(to: 0.10, duration: 1.8)
         ])))
 
+        let sparkXLow: CGFloat = 24
+        let sparkXHigh = size.width - 24
+        let sparkYLow: CGFloat = 80
+        let sparkYHigh = size.height - (showsHeroPanel ? 180 : 60)
+        let sparkRangeOK = sparkXLow < sparkXHigh && sparkYLow < sparkYHigh
+
         for index in 0..<9 {
             let spark = SKShapeNode(circleOfRadius: CGFloat.random(in: 1.5...3.6))
             spark.fillColor = (index.isMultiple(of: 3) ? Palette.warning : accentColor).withAlphaComponent(0.32)
             spark.strokeColor = .clear
-            spark.position = CGPoint(
-                x: CGFloat.random(in: 24...(size.width - 24)),
-                y: CGFloat.random(in: 80...(size.height - (showsHeroPanel ? 180 : 60)))
-            )
+            if sparkRangeOK {
+                spark.position = CGPoint(
+                    x: CGFloat.random(in: sparkXLow...sparkXHigh),
+                    y: CGFloat.random(in: sparkYLow...sparkYHigh)
+                )
+            } else {
+                spark.position = CGPoint(x: size.width * 0.5, y: size.height * 0.45)
+            }
             spark.zPosition = 0
             addChild(spark)
             let drift = CGFloat.random(in: 14...36)
