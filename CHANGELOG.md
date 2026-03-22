@@ -4,6 +4,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+### Corregido
+
+- **Artificial World / BaseScene**: evitar `CGFloat.random(in:)` con rangos inválidos (pantalla baja o `didChangeSize` intermedio), que podían **cerrar la app** al reconstruir el escenario o el fondo.
+- **Artificial World**: `spawnInitialSquares` comprueba que el rectángulo del mundo sea válido antes de posiciones aleatorias; **HUD con `zPosition` más alto** para que los botones reciban el toque antes que el mapa.
+
 ## [1.1.2] — 2026-03-22
 
 ### Añadido
