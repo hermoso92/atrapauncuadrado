@@ -107,7 +107,7 @@ Ejecutar tests en Xcode: **Product → Test** (⌘U).
 
 ## Versionado y licencia
 
-- **Versión actual del target:** **1.1.1** (build **3**); historial en [CHANGELOG.md](CHANGELOG.md). Etiquetas Git: **`v1.0`**, **`v1.1.0`**, **`v1.1.1`**.
+- **Versión actual del target:** **1.1.2** (build **4**); historial en [CHANGELOG.md](CHANGELOG.md). Etiquetas Git recientes: **`v1.1.2`**, **`v1.1.1`**, **`v1.1.0`**, **`v1.0`**.
 - **Licencia:** [MIT](LICENSE) — Copyright (c) 2026 Antonio Hermoso.
 
 GitHub muestra automáticamente el `README.md` en la página del repositorio y detecta el archivo `LICENSE` para el resumen de licencia del proyecto.

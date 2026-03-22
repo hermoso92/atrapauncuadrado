@@ -4,9 +4,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+## [1.1.2] — 2026-03-22
+
 ### Añadido
 
-- CI en **GitHub Actions** (`.github/workflows/ios.yml`): build en simulador y tests unitarios en cada push/PR a `main`.
+- CI en **GitHub Actions** (`.github/workflows/ios.yml`): build en simulador y tests unitarios en cada push/PR a `main`; badge en `README.md`. En el runner se usa `IPHONEOS_DEPLOYMENT_TARGET=18.0` (el target del proyecto puede seguir en 26.x en local).
 
 ## [1.1.1] — 2026-03-22
 
@@ -51,6 +53,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 - Versión de marketing inicial de la app: **1.0** (etiqueta `v1.0` en Git).
 
+[1.1.2]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.2
 [1.1.1]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.1
 [1.1.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.1.0
 [1.0.0]: https://github.com/hermoso92/atrapauncuadrado/releases/tag/v1.0
