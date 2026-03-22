@@ -13,3 +13,6 @@ DerivedData/
 # Local screenshots not part of the app bundle
 /1.png
 /Captura de pantalla*.png
+
+# Otro proyecto / copia local: conservar en disco, no versionar
+/Artificial_world/
