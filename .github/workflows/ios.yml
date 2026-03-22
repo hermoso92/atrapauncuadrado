@@ -1,0 +1,40 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# El proyecto usa IPHONEOS_DEPLOYMENT_TARGET alto (p. ej. 26.x) para tu Xcode local.
+# Los runners de GitHub suelen traer SDKs anteriores; en CI bajamos solo el mínimo de despliegue
+# para compilar y ejecutar tests en simulador (el código no depende de APIs solo de iOS 26).
+jobs:
+  build-and-test:
+    name: Build and unit tests
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build (iOS Simulator)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -scheme "Atrapa un cuadrado" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            IPHONEOS_DEPLOYMENT_TARGET=18.0 \
+            build
+
+      - name: Unit tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme "Atrapa un cuadrado" \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -only-testing:"Atrapa un cuadradoTests" \
+            -parallel-testing-enabled NO \
+            IPHONEOS_DEPLOYMENT_TARGET=18.0

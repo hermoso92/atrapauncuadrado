@@ -4,6 +4,9 @@ Juego para **iOS** hecho con **Swift**, **UIKit** y **SpriteKit**: arcade clási
 
 **Repositorio:** [github.com/hermoso92/atrapauncuadrado](https://github.com/hermoso92/atrapauncuadrado)
 
+[![iOS CI](https://github.com/hermoso92/atrapauncuadrado/actions/workflows/ios.yml/badge.svg?branch=main)](https://github.com/hermoso92/atrapauncuadrado/actions/workflows/ios.yml)  
+*(En CI se usa `IPHONEOS_DEPLOYMENT_TARGET=18.0` para compilar en los runners de GitHub; tu target local puede seguir en 26.x.)*
+
 ## Requisitos
 
 | Herramienta | Notas |

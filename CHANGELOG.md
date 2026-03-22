@@ -4,6 +4,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/), y 
 
 ## [Unreleased]
 
+### Añadido
+
+- CI en **GitHub Actions** (`.github/workflows/ios.yml`): build en simulador y tests unitarios en cada push/PR a `main`.
+
 ## [1.1.1] — 2026-03-22
 
 ### Añadido
