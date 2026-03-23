@@ -37,7 +37,8 @@ struct WorldAgentBrain {
         shelterCenter: CGPoint,
         shelterRadius: CGFloat,
         squares: [WorldSquareBody],
-        worldBounds: CGRect
+        worldBounds: CGRect,
+        companionStats: CompanionStats?
     ) -> CGPoint? {
         guard now - lastChoiceAt >= minInterval else {
             return nil
@@ -47,17 +48,19 @@ struct WorldAgentBrain {
         let distToShelter = hypot(player.x - shelterCenter.x, player.y - shelterCenter.y)
         let inShelter = distToShelter < shelterRadius + 8
 
+        let fleeDistance: CGFloat = companionStats?.traits.contains(.protector) == true ? 125 : 95
+        
         if let hostile = nearestSquare(of: .hostile, to: player, in: squares) {
             let d = hypot(hostile.position.x - player.x, hostile.position.y - player.y)
-            if d < 95 {
+            if d < fleeDistance {
                 state = .flee
                 let away = CGVector(
                     dx: player.x - hostile.position.x,
                     dy: player.y - hostile.position.y
                 )
                 let n = away.normalized
-                let flee = CGPoint(x: player.x + n.dx * 120, y: player.y + n.dy * 120)
-                return clamp(flee, worldBounds: worldBounds, inset: 40)
+                let fleePoint = CGPoint(x: player.x + n.dx * 120, y: player.y + n.dy * 120)
+                return clamp(fleePoint, worldBounds: worldBounds, inset: 40)
             }
         }
 
@@ -66,7 +69,7 @@ struct WorldAgentBrain {
             return shelterCenter
         }
 
-        if let best = bestHarvestTarget(player: player, hunger: hunger, energy: energy, squares: squares) {
+        if let best = bestHarvestTarget(player: player, hunger: hunger, energy: energy, squares: squares, companionStats: companionStats) {
             state = .harvest
             return best.position
         }
@@ -82,7 +85,8 @@ struct WorldAgentBrain {
         player: CGPoint,
         hunger: Double,
         energy: Double,
-        squares: [WorldSquareBody]
+        squares: [WorldSquareBody],
+        companionStats: CompanionStats?
     ) -> String {
         let hU = hunger
         let eU = energy
@@ -94,7 +98,10 @@ struct WorldAgentBrain {
             let d = max(1, hypot(s.position.x - player.x, s.position.y - player.y))
             return d < 100 ? (100 - d) : 0
         }.max() ?? 0
-        return String(format: "U h:%.2f e:%.2f food:%.1f danger:%.1f", hU, eU, foodScore, danger)
+        
+        let traitStr = companionStats?.traits.first?.rawValue ?? "balanced"
+        
+        return String(format: "U h:%.2f e:%.2f food:%.1f danger:%.1f | T: %@", hU, eU, foodScore, danger, traitStr)
     }
 
     private func nearestSquare(of kind: ArtificialWorldSquareKind, to p: CGPoint, in squares: [WorldSquareBody]) -> WorldSquareBody? {
@@ -103,20 +110,76 @@ struct WorldAgentBrain {
         })
     }
 
-    private func bestHarvestTarget(player: CGPoint, hunger: Double, energy: Double, squares: [WorldSquareBody]) -> WorldSquareBody? {
+    private func bestHarvestTarget(player: CGPoint, hunger: Double, energy: Double, squares: [WorldSquareBody], companionStats: CompanionStats?) -> WorldSquareBody? {
         let candidates = squares.filter { $0.kind != .hostile }
         guard !candidates.isEmpty else {
             return nil
         }
-        return candidates.max(by: { scoreSquare($0, player: player, hunger: hunger, energy: energy) < scoreSquare($1, player: player, hunger: hunger, energy: energy) })
+        return candidates.max(by: { scoreSquare($0, player: player, hunger: hunger, energy: energy, allSquares: squares, companionStats: companionStats) < scoreSquare($1, player: player, hunger: hunger, energy: energy, allSquares: squares, companionStats: companionStats) })
     }
 
-    private func scoreSquare(_ s: WorldSquareBody, player: CGPoint, hunger: Double, energy: Double) -> Double {
+    private func scoreSquare(_ s: WorldSquareBody, player: CGPoint, hunger: Double, energy: Double, allSquares: [WorldSquareBody], companionStats: CompanionStats?) -> Double {
         let d = hypot(s.position.x - player.x, s.position.y - player.y)
         let distFactor = 1 / max(24, d)
+
         let needFood = max(0, 0.55 - hunger)
         let needEnergy = max(0, 0.55 - energy)
-        return distFactor * 100 + needFood * s.kind.hungerRestore * 80 + needEnergy * s.kind.energyRestore * 60 + (s.kind == .rare ? 12 : 0)
+
+        var score = distFactor * 100
+        score += needFood * s.kind.hungerRestore * 80
+        score += needEnergy * s.kind.energyRestore * 60
+        score += (s.kind == .rare ? 12 : 0)
+
+        // Modificadores de personalidad
+        if let traits = companionStats?.traits {
+            if traits.contains(.aggressive) {
+                if let hostile = nearestSquare(of: .hostile, to: s.position, in: allSquares) {
+                    let hostileDist = hypot(s.position.x - hostile.position.x, s.position.y - hostile.position.y)
+                    if hostileDist < 200 {
+                        score += 15
+                    }
+                }
+            }
+            if traits.contains(.collector) && s.kind == .rare {
+                score *= 1.5 // Bonus grande para items raros si es coleccionista
+            }
+        }
+        
+        return score
+    }
+        return candidates.max(by: { scoreSquare($0, player: player, hunger: hunger, energy: energy, companionStats: companionStats) < scoreSquare($1, player: player, hunger: hunger, energy: energy, companionStats: companionStats) })
+    }
+
+    private func scoreSquare(_ s: WorldSquareBody, player: CGPoint, hunger: Double, energy: Double, companionStats: CompanionStats?) -> Double {
+        let d = hypot(s.position.x - player.x, s.position.y - player.y)
+        let distFactor = 1 / max(24, d)
+
+        let needFood = max(0, 0.55 - hunger)
+        let needEnergy = max(0, 0.55 - energy)
+
+        var score = distFactor * 100
+        score += needFood * s.kind.hungerRestore * 80
+        score += needEnergy * s.kind.energyRestore * 60
+        score += (s.kind == .rare ? 12 : 0)
+
+        // Modificadores de personalidad
+        if let traits = companionStats?.traits {
+            if traits.contains(.aggressive) {
+                // El compañero agresivo se acerca más a los hostiles (esto se maneja en la lógica de 'flee',
+                // pero aquí podemos darle un pequeño bonus por estar cerca de la acción)
+                if let hostile = nearestSquare(of: .hostile, to: s.position, in: []) /* passing empty array as we don't have squares here, logic needs adjustment */ {
+                    let hostileDist = hypot(s.position.x - hostile.position.x, s.position.y - hostile.position.y)
+                    if hostileDist < 200 {
+                        score += 15
+                    }
+                }
+            }
+            if traits.contains(.collector) && s.kind == .rare {
+                score *= 1.5 // Bonus grande para items raros si es coleccionista
+            }
+        }
+        
+        return score
     }
 
     private func randomPoint(in rect: CGRect, inset: CGFloat) -> CGPoint {

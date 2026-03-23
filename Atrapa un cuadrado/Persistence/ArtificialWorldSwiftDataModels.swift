@@ -17,6 +17,7 @@ final class PersistedWorldState {
     var zoneUnlockFlagsData: Data
     // FASE5: Danger zones (encoded [DangerZone])
     var dangerZonesData: Data
+    var companionStatsData: Data
 
     init(
         worldId: UUID,
@@ -30,7 +31,8 @@ final class PersistedWorldState {
         lastSavedAt: Date,
         unlockedAbilitiesData: Data = Data(),
         zoneUnlockFlagsData: Data = Data(),
-        dangerZonesData: Data = Data()
+        dangerZonesData: Data = Data(),
+        companionStatsData: Data = Data()
     ) {
         self.worldId = worldId
         self.playerPositionX = playerPositionX
@@ -44,6 +46,7 @@ final class PersistedWorldState {
         self.unlockedAbilitiesData = unlockedAbilitiesData
         self.zoneUnlockFlagsData = zoneUnlockFlagsData
         self.dangerZonesData = dangerZonesData
+        self.companionStatsData = companionStatsData
     }
 }
 

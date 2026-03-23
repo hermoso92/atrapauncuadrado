@@ -18,6 +18,7 @@ final class SwiftDataWorldRepository: WorldRepository, AgentMemoryStore {
         }
         let ids = (try? JSONDecoder().decode([String].self, from: row.inventoryItemIdsData)) ?? []
         let abilityRaws = (try? JSONDecoder().decode([String].self, from: row.unlockedAbilitiesData)) ?? []
+        let companionStats = (try? JSONDecoder().decode(CompanionStats.self, from: row.companionStatsData))
         return ArtificialWorldSnapshot(
             worldId: row.worldId,
             playerPositionX: row.playerPositionX,
@@ -28,7 +29,8 @@ final class SwiftDataWorldRepository: WorldRepository, AgentMemoryStore {
             inventoryItemIds: ids,
             controlModeRaw: row.controlModeRaw,
             lastSavedAt: row.lastSavedAt,
-            unlockedWorldAbilityRaws: abilityRaws
+            unlockedWorldAbilityRaws: abilityRaws,
+            companionStats: companionStats
         )
     }
 
@@ -38,6 +40,7 @@ final class SwiftDataWorldRepository: WorldRepository, AgentMemoryStore {
         let rows = try context.fetch(descriptor)
         let idsData = (try? JSONEncoder().encode(snapshot.inventoryItemIds)) ?? Data()
         let abilitiesData = (try? JSONEncoder().encode(snapshot.unlockedWorldAbilityRaws)) ?? Data()
+        let companionData = (try? JSONEncoder().encode(snapshot.companionStats)) ?? Data()
         if let existing = rows.first {
             existing.worldId = snapshot.worldId
             existing.playerPositionX = snapshot.playerPositionX
@@ -49,6 +52,7 @@ final class SwiftDataWorldRepository: WorldRepository, AgentMemoryStore {
             existing.controlModeRaw = snapshot.controlModeRaw
             existing.lastSavedAt = snapshot.lastSavedAt
             existing.unlockedAbilitiesData = abilitiesData
+            existing.companionStatsData = companionData
         } else {
             let row = PersistedWorldState(
                 worldId: snapshot.worldId,
@@ -60,7 +64,8 @@ final class SwiftDataWorldRepository: WorldRepository, AgentMemoryStore {
                 inventoryItemIdsData: idsData,
                 controlModeRaw: snapshot.controlModeRaw,
                 lastSavedAt: snapshot.lastSavedAt,
-                unlockedAbilitiesData: abilitiesData
+                unlockedAbilitiesData: abilitiesData,
+                companionStatsData: companionData
             )
             context.insert(row)
         }

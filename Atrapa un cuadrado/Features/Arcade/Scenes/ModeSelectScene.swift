@@ -1,6 +1,6 @@
 import SpriteKit
 
-/// Distribuye strip + 4 tarjetas según altura de escena (iPhone pequeño vs grande).
+/// Distribuye strip + 5 tarjetas (3 arcade + AW + multijugador) según altura de escena.
 private struct ModeSelectMetrics {
     let cardSize: CGSize
     let rowSpacing: CGFloat
@@ -27,8 +27,8 @@ private struct ModeSelectMetrics {
         var stripHeight: CGFloat = h < 720 ? 72 : 88
 
         while cardHeight >= 72 {
-            let y3 = bottomReserve + cardHeight / 2
-            let y0 = y3 + 3 * rowSpacing
+            let yBottom = bottomReserve + cardHeight / 2
+            let y0 = yBottom + 4 * rowSpacing
             let stripCenter = y0 + cardHeight / 2 + 10 + stripHeight / 2
             if stripCenter <= topMax {
                 let tight = h < 720
@@ -57,8 +57,8 @@ private struct ModeSelectMetrics {
         let cardHeightFinal: CGFloat = 72
         let rowSpacingFinal: CGFloat = 86
         let stripHeightFinal: CGFloat = 64
-        let y3 = bottomReserve + cardHeightFinal / 2
-        let y0 = y3 + 3 * rowSpacingFinal
+        let yBottom = bottomReserve + cardHeightFinal / 2
+        let y0 = yBottom + 4 * rowSpacingFinal
         let stripCenter = min(topMax, y0 + cardHeightFinal / 2 + 8 + stripHeightFinal / 2)
         return ModeSelectMetrics(
             cardSize: CGSize(width: w - 46, height: cardHeightFinal),
@@ -115,7 +115,7 @@ final class ModeSelectScene: BaseScene {
         removeAllChildren()
         setupBackdrop(
             title: "ATRAPA UN CUADRADO",
-            subtitle: "Cuatro modos: Clasico, Arsenal, Fantasma y Mundo artificial."
+            subtitle: "Arcade, Mundo artificial y multijugador local en el mismo dispositivo."
         )
 
         let m = ModeSelectMetrics.make(for: size)
@@ -162,8 +162,13 @@ final class ModeSelectScene: BaseScene {
         worldCard.position = CGPoint(x: size.width / 2, y: m.firstCardCenterY - CGFloat(worldIndex) * m.rowSpacing)
         addChild(worldCard)
 
+        let mpIndex = worldIndex + 1
+        let multiplayerCard = multiplayerCard(metrics: m)
+        multiplayerCard.position = CGPoint(x: size.width / 2, y: m.firstCardCenterY - CGFloat(mpIndex) * m.rowSpacing)
+        addChild(multiplayerCard)
+
         let footer = makeLabel(
-            text: "Los tres primeros son el arcade original; el cuarto es el modo persistente nuevo.",
+            text: "Tres arcade, mundo persistente (AW) y multijugador local (en desarrollo).",
             fontNamed: GameConfig.coinFont,
             fontSize: m.hookFont,
             color: Palette.textSecondary.withAlphaComponent(0.72),
@@ -189,6 +194,15 @@ final class ModeSelectScene: BaseScene {
             let repo = ArtificialWorldPersistence.worldRepository()
             let memory = ArtificialWorldPersistence.agentMemoryStore()
             present(ArtificialWorldScene(sceneSize: size, worldRepository: repo, memoryStore: memory))
+            return
+        }
+
+        if nodeName(at: location, withPrefix: "multiplayer.") == "multiplayer.card" {
+            telemetry.logEvent("arcade_mode_select_multiplayer", parameters: [:])
+            soundManager.playButtonTap()
+            hapticsManager.tap()
+            AppLaunchPreferences.lastExperience = .arcadeHub
+            present(PlayerSelectScene(sceneSize: size, dependencies: deps))
             return
         }
 
@@ -294,6 +308,82 @@ final class ModeSelectScene: BaseScene {
         )
         hook.horizontalAlignmentMode = .left
         hook.position = CGPoint(x: -size.width / 2 + 36, y: -20)
+        card.addChild(hook)
+
+        let actionPlate = SKShapeNode(rectOf: CGSize(width: 84, height: 20), cornerRadius: 10)
+        actionPlate.fillColor = Palette.success.withAlphaComponent(0.12)
+        actionPlate.strokeColor = Palette.success
+        actionPlate.lineWidth = 1.2
+        actionPlate.position = CGPoint(x: size.width / 2 - iconR - 20, y: -34)
+        card.addChild(actionPlate)
+
+        let action = makeLabel(
+            text: "ENTRAR",
+            fontNamed: GameConfig.coinFont,
+            fontSize: m.minorFont,
+            color: Palette.success,
+            width: 72,
+            lines: 1
+        )
+        action.position = CGPoint(x: 0, y: 5)
+        actionPlate.addChild(action)
+
+        return card
+    }
+
+    private func multiplayerCard(metrics m: ModeSelectMetrics) -> SKShapeNode {
+        let size = m.cardSize
+        let card = makePanel(
+            size: size,
+            stroke: Palette.accent,
+            fill: Palette.panel.withAlphaComponent(0.94),
+            cornerRadius: m.panelCorner
+        )
+        card.name = "multiplayer.card"
+        card.isAccessibilityElement = true
+        card.accessibilityLabel = "Multijugador, jugar con amigos en el mismo dispositivo"
+        card.lineWidth = 2
+        card.glowWidth = 3
+
+        let iconR = m.iconSide / 2
+        let iconPanel = SKShapeNode(rectOf: CGSize(width: m.iconSide, height: m.iconSide), cornerRadius: iconR * 0.62)
+        iconPanel.fillColor = Palette.accent.withAlphaComponent(0.14)
+        iconPanel.strokeColor = Palette.accent.withAlphaComponent(0.65)
+        iconPanel.lineWidth = 1.5
+        iconPanel.position = CGPoint(x: size.width / 2 - iconR - 20, y: 4)
+        card.addChild(iconPanel)
+
+        for (i, ox) in [-10.0, 0.0, 10.0].enumerated() {
+            let dot = SKShapeNode(circleOfRadius: CGFloat(5 - i / 2))
+            dot.fillColor = Palette.accent.withAlphaComponent(0.75 - CGFloat(i) * 0.12)
+            dot.strokeColor = .clear
+            dot.position = CGPoint(x: CGFloat(ox), y: i.isMultiple(of: 2) ? 4 : -4)
+            iconPanel.addChild(dot)
+        }
+
+        let titleY: CGFloat = size.height < 92 ? 26 : 30
+        let title = makeLabel(
+            text: "MULTIJUGADOR",
+            fontNamed: GameConfig.titleFont,
+            fontSize: m.awTitleFont,
+            color: Palette.textPrimary,
+            width: size.width - m.iconSide - 56,
+            lines: 1
+        )
+        title.horizontalAlignmentMode = .left
+        title.position = CGPoint(x: -size.width / 2 + 36, y: titleY)
+        card.addChild(title)
+
+        let hook = makeLabel(
+            text: "2-4 jugadores en un solo dispositivo. Pantalla de selección en construcción.",
+            fontNamed: GameConfig.coinFont,
+            fontSize: m.hookFont,
+            color: Palette.textSecondary,
+            width: size.width - m.iconSide - 64,
+            lines: 2
+        )
+        hook.horizontalAlignmentMode = .left
+        hook.position = CGPoint(x: -size.width / 2 + 36, y: -10)
         card.addChild(hook)
 
         let actionPlate = SKShapeNode(rectOf: CGSize(width: 84, height: 20), cornerRadius: 10)

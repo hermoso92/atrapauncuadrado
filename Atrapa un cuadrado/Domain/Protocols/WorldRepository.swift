@@ -14,6 +14,7 @@ struct ArtificialWorldSnapshot: Codable, Equatable, Sendable {
     var lastSavedAt: Date
     /// Raw values de `WorldAbility` desbloqueadas; vacío en datos legacy = todas en runtime.
     var unlockedWorldAbilityRaws: [String]
+    var companionStats: CompanionStats?
 
     init(
         worldId: UUID,
@@ -25,7 +26,8 @@ struct ArtificialWorldSnapshot: Codable, Equatable, Sendable {
         inventoryItemIds: [String],
         controlModeRaw: String,
         lastSavedAt: Date,
-        unlockedWorldAbilityRaws: [String] = []
+        unlockedWorldAbilityRaws: [String] = [],
+        companionStats: CompanionStats? = nil
     ) {
         self.worldId = worldId
         self.playerPositionX = playerPositionX
@@ -37,6 +39,7 @@ struct ArtificialWorldSnapshot: Codable, Equatable, Sendable {
         self.controlModeRaw = controlModeRaw
         self.lastSavedAt = lastSavedAt
         self.unlockedWorldAbilityRaws = unlockedWorldAbilityRaws
+        self.companionStats = companionStats
     }
 }
 
